@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Vanilai</string>
+
+    <string name="title_activity_main">Vanilai</string>
+    <string name="forecast_io_app_id">e5aa93a28a1be7d23a7482e2b8d5c60a</string>
+    <string name="openweathermap_app_id">ac6c848ec4823abdb185a4016fbd6ba3</string>
+
+    <string name="title_activity_launcher">Vanilai</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_vanilai">Vanilai</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="current_precipitation">%1$d%%</string>
+    <string name="current_humidity">%1$.2f</string>
+    <string name="current_temperature">%1$s%2$s</string>
+    <string name="action_add_string">Add</string>
+    <string name="default_temperature">---</string>
+    <string name="default_location">Los Angeles, CA</string>
+    <string name="weekly_button">7-Day</string>
+    <string name="hourly_button">Hourly</string>
+    <string name="refresh_button">refresh_button</string>
+    <string name="default_weather_description">Mostly Cloudy</string>
+    <string name="get_earthquake_information">Get Earthquake Information</string>
+    <string name="current_time">Current Time</string>
+    <string name="current_weather_image">current weather image</string>
+    <string name="default_precip">0%</string>
+    <string name="precipitation_label">Precipitation</string>
+    <string name="default_humidity">0.00</string>
+    <string name="humidity_label">HUMIDITY</string>
+
+    <string name="title_activity_forecast">ForecastActivity</string>
+    <string name="apparent_temperature">Feels like %1$d</string>
+    <string name="max_temperature">Max: %1$s</string>
+    <string name="min_temperature">Min: %1$s</string>
+    <string name="min_temp_default">Min:</string>
+    <string name="max_temp_default">Max:</string>
+
+    <string name="title_activity_vanilai_full_screen">VanilaiFullScreenActivity</string>
+</resources>

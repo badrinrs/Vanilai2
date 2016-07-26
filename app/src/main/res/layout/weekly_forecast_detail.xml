@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                tools:background="@drawable/bg_gradient"
+                android:id="@+id/weekly_list_detail_row">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/temperature_layout"
+        android:layout_margin="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/max_temp_default"
+            android:id="@+id/max_temperature"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/min_temp_default"
+            android:id="@+id/min_temperature"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/weather_image"
+        android:layout_alignTop="@+id/temperature_layout"
+        android:layout_alignBottom="@id/temperature_layout"
+        android:src="@drawable/clear_day"
+        android:layout_toEndOf="@+id/temperature_layout"
+        android:layout_margin="5dp"
+        android:contentDescription="@string/current_weather_image"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/day"
+        android:layout_alignTop="@+id/temperature_layout"
+        android:layout_alignBottom="@id/temperature_layout"
+        android:layout_toEndOf="@+id/weather_image"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_margin="5dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/summary"
+        android:layout_alignTop="@+id/temperature_layout"
+        android:layout_toEndOf="@+id/day"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:layout_margin="5dp"/>
+
+
+</RelativeLayout>
