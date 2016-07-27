@@ -9,6 +9,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -27,9 +31,10 @@ public class EarthquakeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_earthquake);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        ImageButton backButton = (ImageButton) findViewById(R.id.backButton);
         Intent forecastIntent = getIntent();
         Gson gson = new Gson();
         Earthquake earthquake = gson.fromJson(forecastIntent.getStringExtra("earthquake"), Earthquake.class);
@@ -49,17 +54,13 @@ public class EarthquakeActivity extends AppCompatActivity {
         EarthquakeListAdapter earthquakeListAdapter = new EarthquakeListAdapter(this, earthquakeProperties);
         earthquakeListAdapter.notifyDataSetChanged();
         recyclerView.setAdapter(earthquakeListAdapter);
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
+            }
+        });
     }
 
 }

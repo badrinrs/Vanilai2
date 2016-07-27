@@ -16,7 +16,7 @@
     <string name="current_temperature">%1$s%2$s</string>
     <string name="action_add_string">Add</string>
     <string name="default_temperature">---</string>
-    <string name="default_location">Los Angeles, CA</string>
+    <string name="default_location">San Francisco</string>
     <string name="weekly_button">7-Day</string>
     <string name="hourly_button">Hourly</string>
     <string name="refresh_button">refresh_button</string>

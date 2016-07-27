@@ -8,6 +8,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -30,9 +35,10 @@ public class ForecastActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_forecast);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        ImageButton backButton = (ImageButton) findViewById(R.id.backButton);
         Intent forecastIntent = getIntent();
         Gson gson = new Gson();
         Forecast forecast = gson.fromJson(forecastIntent.getStringExtra("forecast"), Forecast.class);
@@ -61,16 +67,13 @@ public class ForecastActivity extends AppCompatActivity {
             weeklyForecastAdapter.notifyDataSetChanged();
             recyclerView.setAdapter(weeklyForecastAdapter);
         }
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 finish();
-        }
-        return super.onOptionsItemSelected(item);
+            }
+        });
     }
 
 
