@@ -43,7 +43,6 @@ public class EarthquakeListAdapter extends RecyclerView.Adapter<EarthquakeListAd
     public void onBindViewHolder(EarthquakeViewHolder holder, int position) {
         EarthquakeProperties earthquakeProperties = mEarthquakePropertiesList.get(position);
         EarthquakeInformation earthquakeInformation = earthquakeProperties.getEarthquakeInformation();
-        Resources resources = mContext.getResources();
         holder.mMagnitude.setText("Mag: "+earthquakeInformation.getMagnitude());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd h:mm a", Locale.getDefault());
         holder.mTime.setText(simpleDateFormat.format(new Date(earthquakeInformation.getTime()*1000)));
