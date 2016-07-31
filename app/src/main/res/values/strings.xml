@@ -38,5 +38,5 @@
     <string name="max_temp_default">Max:</string>
 
     <string name="title_activity_vanilai_full_screen">VanilaiFullScreenActivity</string>
-    <string name="cityZipLabel"><![CDATA[Please provide City, State & Country or Zip below]]></string>
+    <string name="cityZipLabel"><![CDATA[Please provide City or Zip below]]></string>
 </resources>

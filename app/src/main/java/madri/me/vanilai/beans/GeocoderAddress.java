@@ -10,4 +10,8 @@ import java.util.List;
 public class GeocoderAddress {
     @SerializedName("results")
     private List<AddressResult> mAddressResultsList;
+
+    public List<AddressResult> getAddressResultsList() {
+        return mAddressResultsList;
+    }
 }

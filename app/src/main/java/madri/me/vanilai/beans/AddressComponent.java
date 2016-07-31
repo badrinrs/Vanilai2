@@ -15,5 +15,17 @@ public class AddressComponent {
     @SerializedName("types")
     private List<String> addressTypes;
 
+    public List<String> getAddressTypes() {
+        return addressTypes;
+    }
+
+    public String getLongName() {
+        return mLongName;
+    }
+
+    public String getShortName() {
+        return mShortName;
+    }
+
 
 }

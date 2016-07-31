@@ -29,20 +29,8 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/dialog_state"
-        android:layout_below="@+id/dialog_city"
-        android:layout_centerHorizontal="true"
-        android:maxLines="1"
-        android:lines="1"
-        android:inputType="textAutoComplete"
-        android:textAlignment="center"
-        android:hint="Country"/>
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/dialog_zip"
-        android:layout_below="@+id/dialog_state"
+        android:layout_below="@+id/dialog_city"
         android:layout_centerHorizontal="true"
         android:maxLines="1"
         android:lines="1"

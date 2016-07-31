@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -42,13 +43,21 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import madri.me.vanilai.R;
+import madri.me.vanilai.beans.AddressComponent;
+import madri.me.vanilai.beans.AddressResult;
+import madri.me.vanilai.beans.City;
 import madri.me.vanilai.beans.Earthquake;
 import madri.me.vanilai.beans.Forecast;
+import madri.me.vanilai.beans.GeocoderAddress;
+import madri.me.vanilai.beans.Geometry;
 import madri.me.vanilai.helper.AddressHelper;
+import madri.me.vanilai.service.AddressGeocodingService;
 import madri.me.vanilai.service.EarthquakeService;
 import madri.me.vanilai.service.VanilaiWeatherService;
 import retrofit2.Call;
@@ -82,9 +91,12 @@ public class VanilaiFullScreenActivity extends AppCompatActivity implements Goog
     private Switch mTemperatureSwitch;
     private Earthquake mEarthquake;
 
+    private List<City> mCities;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mCities = new ArrayList<>();
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_vanilai_full_screen);
@@ -203,26 +215,65 @@ public class VanilaiFullScreenActivity extends AppCompatActivity implements Goog
                         View dialogView = dialog.getCustomView();
                         if(dialogView!=null) {
                             EditText cityEditText = (EditText) dialogView.findViewById(R.id.dialog_city);
-                            EditText countryEditText = (EditText) dialogView.findViewById(R.id.dialog_state);
                             EditText zipEditText = (EditText) dialogView.findViewById(R.id.dialog_zip);
                             Log.v(TAG, "City: "+cityEditText.getText().toString().isEmpty());
-                            Log.v(TAG, "Country: "+countryEditText.getText().toString().isEmpty());
                             Log.v(TAG, "Zip: "+zipEditText.getText().toString().isEmpty());
-                            if (cityEditText.getText().toString().isEmpty() && countryEditText.getText().toString().isEmpty() && zipEditText.getText().toString().isEmpty()) {
+                            if (cityEditText.getText().toString().isEmpty() && zipEditText.getText().toString().isEmpty()) {
                                 Log.e(TAG, "Please provide atleast one!!!");
                             } else {
                                 StringBuilder locationBuilder = new StringBuilder();
                                 if (!cityEditText.getText().toString().isEmpty()) {
                                     locationBuilder.append(cityEditText.getText().toString()).append(" ");
                                 }
-                                if (!countryEditText.getText().toString().isEmpty()) {
-                                    locationBuilder.append(countryEditText.getText().toString()).append(" ");
-                                }
                                 if (!zipEditText.getText().toString().isEmpty()) {
-                                    locationBuilder.append(countryEditText.getText().toString());
+                                    locationBuilder.append(zipEditText.getText().toString());
                                 }
                                 String location = locationBuilder.toString();
-                                AddressHelper.getAddressFromLocation(location, getApplicationContext(), new ReverseGeocoderHandler());
+                                Retrofit retrofit = new Retrofit.Builder().baseUrl("https://maps.googleapis.com/")
+                                        .addConverterFactory(GsonConverterFactory.create())
+                                       .build();
+                                AddressGeocodingService geocodingService = retrofit.create(AddressGeocodingService.class);
+                                Call<GeocoderAddress> geocoderAddressCall = geocodingService
+                                        .getAddress(location, getResources().getString(R.string.geocoding_api));
+                                Log.v(TAG, "Geocoding Call: "+geocoderAddressCall.request().url().toString());
+                                geocoderAddressCall.enqueue(new Callback<GeocoderAddress>() {
+                                    @Override
+                                    public void onResponse(Call<GeocoderAddress> call, Response<GeocoderAddress> response) {
+                                        GeocoderAddress geocoderAddress = response.body();
+                                        List<City> cities = new ArrayList<>();
+                                        for(AddressResult addressResult: geocoderAddress.getAddressResultsList()) {
+                                            City city = new City();
+                                            for(AddressComponent addressComponent: addressResult.getAddressComponentList()) {
+                                                if(addressComponent.getAddressTypes().contains("locality")) {
+                                                    city.setCity(addressComponent.getLongName());
+                                                }
+                                                if(addressComponent.getAddressTypes().contains("administrative_area_level_1")) {
+                                                    city.setState(addressComponent.getShortName());
+                                                }
+                                                if(addressComponent.getAddressTypes().contains("country")) {
+                                                    city.setCountry(addressComponent.getLongName());
+                                                }
+                                            }
+                                            Geometry geometry = geocoderAddress.getAddressResultsList().get(0).getGeometry();
+                                            city.setLatitude(geometry.getGeoLocation().getLatitude());
+                                            city.setLongitude(geometry.getGeoLocation().getLongitude());
+                                            cities.add(city);
+                                        }
+                                        if(cities.size()>1) {
+                                            Log.w(TAG, "More than 1 city in search result");
+                                        } else {
+                                            mCities.add(cities.get(0));
+                                            Log.v(TAG, "City Found: "+cities.get(0).getCity());
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<GeocoderAddress> call, Throwable t) {
+                                        Log.e(TAG, "Please try again later!");
+                                    }
+                                });
+
                             }
                         }
 
@@ -383,22 +434,6 @@ public class VanilaiFullScreenActivity extends AppCompatActivity implements Goog
                     locationAddress = null;
             }
             mLocationTextView.setText(locationAddress);
-        }
-    }
-
-    static class ReverseGeocoderHandler extends Handler {
-        @Override
-        public void handleMessage(Message message) {
-            String locationAddress;
-            switch (message.what) {
-                case 1:
-                    Bundle bundle = message.getData();
-                    locationAddress = bundle.getString("address");
-                    break;
-                default:
-                    locationAddress = null;
-            }
-            Log.v(TAG, "Location Address: "+locationAddress);
         }
     }
 

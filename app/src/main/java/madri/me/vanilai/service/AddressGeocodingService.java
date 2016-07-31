@@ -8,7 +8,7 @@ import retrofit2.http.Query;
 /**
  * Created by badri on 7/30/16.
  */
-public interface AddressHelper {
+public interface AddressGeocodingService {
     @GET("maps/api/geocode/json")
     Call<GeocoderAddress> getAddress(@Query("address") String address, @Query("key") String apiKey);
 }

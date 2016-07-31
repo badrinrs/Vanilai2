@@ -12,4 +12,12 @@ public class AddressResult {
     private List<AddressComponent> mAddressComponentList;
     @SerializedName("geometry")
     private Geometry mGeometry;
+
+    public List<AddressComponent> getAddressComponentList() {
+        return mAddressComponentList;
+    }
+
+    public Geometry getGeometry() {
+        return mGeometry;
+    }
 }
