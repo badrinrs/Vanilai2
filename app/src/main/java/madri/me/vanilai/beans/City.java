@@ -10,7 +10,24 @@ public class City {
     private String mState;
     private String mCountry;
 
+    public long getId() {
+        return mId;
+    }
 
+    public String getCity() {
+        return mCity;
+    }
 
+    public String getZip() {
+        return mZip;
+    }
+
+    public String getState() {
+        return mState;
+    }
+
+    public String getCountry() {
+        return mCountry;
+    }
 
 }

@@ -4,6 +4,7 @@
     <string name="title_activity_main">Vanilai</string>
     <string name="forecast_io_app_id">e5aa93a28a1be7d23a7482e2b8d5c60a</string>
     <string name="openweathermap_app_id">ac6c848ec4823abdb185a4016fbd6ba3</string>
+    <string name="geocoding_api">AIzaSyBrEXGnRU3Bmwdn-8ToRPYZOAs-SHHSmA0</string>
 
     <string name="title_activity_launcher">Vanilai</string>
     <string name="dummy_button">Dummy Button</string>
@@ -37,4 +38,5 @@
     <string name="max_temp_default">Max:</string>
 
     <string name="title_activity_vanilai_full_screen">VanilaiFullScreenActivity</string>
+    <string name="cityZipLabel"><![CDATA[Please provide City, State & Country or Zip below]]></string>
 </resources>

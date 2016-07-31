@@ -22,6 +22,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -199,7 +200,33 @@ public class VanilaiFullScreenActivity extends AppCompatActivity implements Goog
                         .negativeText("Cancel").onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        View dialogView = dialog.getCustomView();
+                        if(dialogView!=null) {
+                            EditText cityEditText = (EditText) dialogView.findViewById(R.id.dialog_city);
+                            EditText countryEditText = (EditText) dialogView.findViewById(R.id.dialog_state);
+                            EditText zipEditText = (EditText) dialogView.findViewById(R.id.dialog_zip);
+                            Log.v(TAG, "City: "+cityEditText.getText().toString().isEmpty());
+                            Log.v(TAG, "Country: "+countryEditText.getText().toString().isEmpty());
+                            Log.v(TAG, "Zip: "+zipEditText.getText().toString().isEmpty());
+                            if (cityEditText.getText().toString().isEmpty() && countryEditText.getText().toString().isEmpty() && zipEditText.getText().toString().isEmpty()) {
+                                Log.e(TAG, "Please provide atleast one!!!");
+                            } else {
+                                StringBuilder locationBuilder = new StringBuilder();
+                                if (!cityEditText.getText().toString().isEmpty()) {
+                                    locationBuilder.append(cityEditText.getText().toString()).append(" ");
+                                }
+                                if (!countryEditText.getText().toString().isEmpty()) {
+                                    locationBuilder.append(countryEditText.getText().toString()).append(" ");
+                                }
+                                if (!zipEditText.getText().toString().isEmpty()) {
+                                    locationBuilder.append(countryEditText.getText().toString());
+                                }
+                                String location = locationBuilder.toString();
+                                AddressHelper.getAddressFromLocation(location, getApplicationContext(), new ReverseGeocoderHandler());
+                            }
+                        }
 
+                        dialog.dismiss();
                     }
                 }).show();
 
@@ -356,6 +383,22 @@ public class VanilaiFullScreenActivity extends AppCompatActivity implements Goog
                     locationAddress = null;
             }
             mLocationTextView.setText(locationAddress);
+        }
+    }
+
+    static class ReverseGeocoderHandler extends Handler {
+        @Override
+        public void handleMessage(Message message) {
+            String locationAddress;
+            switch (message.what) {
+                case 1:
+                    Bundle bundle = message.getData();
+                    locationAddress = bundle.getString("address");
+                    break;
+                default:
+                    locationAddress = null;
+            }
+            Log.v(TAG, "Location Address: "+locationAddress);
         }
     }
 

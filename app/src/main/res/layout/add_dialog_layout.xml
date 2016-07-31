@@ -6,7 +6,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enter Location"
+        android:text="@string/cityZipLabel"
         android:id="@+id/dialog_city_label"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
@@ -24,12 +24,36 @@
         android:lines="1"
         android:inputType="textAutoComplete"
         android:textAlignment="center"
-        android:hint="City"/>
+        android:hint="City, State"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialog_state"
+        android:layout_below="@+id/dialog_city"
+        android:layout_centerHorizontal="true"
+        android:maxLines="1"
+        android:lines="1"
+        android:inputType="textAutoComplete"
+        android:textAlignment="center"
+        android:hint="Country"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialog_zip"
+        android:layout_below="@+id/dialog_state"
+        android:layout_centerHorizontal="true"
+        android:maxLines="1"
+        android:lines="1"
+        android:inputType="number"
+        android:textAlignment="center"
+        android:hint="Zip"/>
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/listView"
-        android:layout_below="@+id/dialog_city"
+        android:layout_below="@+id/dialog_zip"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>

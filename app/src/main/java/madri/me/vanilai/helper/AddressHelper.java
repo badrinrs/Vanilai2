@@ -8,7 +8,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -45,11 +49,53 @@ public class AddressHelper {
                     } else {
                         message.what = 1;
                         Bundle bundle = new Bundle();
-                        result = "Latitude: " + latitude + " Longitude: " + longitude +
-                                "\n Unable to get address for this lat-long.";
+                        result = "";
                         bundle.putString("address", result);
                         message.setData(bundle);
                     }
+                    message.sendToTarget();
+                }
+            }
+        };
+        thread.start();
+    }
+
+    public static void getAddressFromLocation(final String location, final Context context, final Handler handler) {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+                String result = null;
+                try {
+                    List<Address> addresses= geocoder.getFromLocationName(location, 5); // get the found Address Objects
+                    for(Address address: addresses) {
+                        Log.v(TAG, "Address: "+address.getLongitude());
+                    }
+                    StringBuilder builder = new StringBuilder(); // A list to save the coordinates if they are available
+                    if (addresses != null && addresses.size() > 0) {
+                        Address address = addresses.get(0);
+                        if(address.hasLatitude() && address.hasLongitude()) {
+                            builder.append("Latitude: ").append(address.getLongitude()).append("\n")
+                                    .append("Longitude: ").append(address.getLongitude()).append("\n")
+                                    .append("City: ").append(address.getLocality()).append("\n")
+                                    .append("State: ").append(address.getAdminArea()).append("\n")
+                                    .append("Zip: ").append(address.getPostalCode());
+                        }
+                    }
+                    result = builder.toString();
+                    Log.v(TAG, "Result: "+result);
+                } catch (IOException e) {
+                    Log.e(TAG, "Unable connect to Geocoder", e);
+                } finally {
+                    Message message = Message.obtain();
+                    message.setTarget(handler);
+                    if (result == null) {
+                        result = "Unable to get Address for this Location: "+location;
+                    }
+                    message.what = 1;
+                    Bundle bundle = new Bundle();
+                    bundle.putString("address", result);
+                    message.setData(bundle);
                     message.sendToTarget();
                 }
             }
