@@ -41,19 +41,22 @@ public class EarthquakeActivity extends AppCompatActivity {
         String city = forecastIntent.getStringExtra("city");
 
         TextView location = (TextView) findViewById(R.id.location);
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view_earthquake);
-
-        location.setText(city);
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.HORIZONTAL));
         List<EarthquakeProperties> earthquakeProperties = earthquake.getEarthquakeProperties();
-        Log.v("Earthquake", "Place: "+earthquakeProperties.get(0).getEarthquakeInformation().getPlace());
-        EarthquakeListAdapter earthquakeListAdapter = new EarthquakeListAdapter(this, earthquakeProperties);
-        earthquakeListAdapter.notifyDataSetChanged();
-        recyclerView.setAdapter(earthquakeListAdapter);
+        Log.v("Earthquake", "Properties Size: "+earthquakeProperties.size());
+        location.setText(city);
+        TextView noEarthquakesFoundTextView = (TextView) findViewById(R.id.no_earthquakes_text);
+        if(earthquakeProperties.size()!=0) {
+            noEarthquakesFoundTextView.setVisibility(View.GONE);
+            RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view_earthquake);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.HORIZONTAL));
+            Log.v("Earthquake", "Place: " + earthquakeProperties.get(0).getEarthquakeInformation().getPlace());
+            EarthquakeListAdapter earthquakeListAdapter = new EarthquakeListAdapter(this, earthquakeProperties);
+            earthquakeListAdapter.notifyDataSetChanged();
+            recyclerView.setAdapter(earthquakeListAdapter);
+        }
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override

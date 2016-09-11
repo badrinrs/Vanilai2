@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
     @Override
     public LocationViewHolder onCreateViewHolder(ViewGroup parent, int position) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.weekly_forecast_detail, parent, false);
+                .inflate(R.layout.location_list_layout, parent, false);
 
         return new LocationViewHolder(itemView);
     }
@@ -39,8 +40,7 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
         City city = mCities.get(position);
         Resources resources = mContext.getResources();
         holder.mCityName.setText(city.getCity());
-        holder.mMinTemp.setText(resources.getString(R.string.min_temperature, city.getMinTemperature()));
-        holder.mMinTemp.setText(resources.getString(R.string.max_temperature, city.getMaxTemperature()));
+        holder.mCurrentTemperature.setText(resources.getString(R.string.current_temperature, city.getTemperature(), "\u00b0F"));
     }
 
     @Override
@@ -50,13 +50,13 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
 
     public class LocationViewHolder extends RecyclerView.ViewHolder {
         protected TextView mCityName;
-        protected TextView mMaxTemp;
-        protected TextView mMinTemp;
+        protected ImageView mCurrentWeatherImage;
+        protected TextView mCurrentTemperature;
         public LocationViewHolder(View view) {
             super(view);
             mCityName = (TextView) view.findViewById(R.id.locationName);
-            mMaxTemp = (TextView) view.findViewById(R.id.max_temperature);
-            mMinTemp = (TextView) view.findViewById(R.id.min_temperature);
+            mCurrentTemperature = (TextView) view.findViewById(R.id.temperature);
+            mCurrentWeatherImage = (ImageView) view.findViewById(R.id.currentWeatherImage);
         }
     }
 }

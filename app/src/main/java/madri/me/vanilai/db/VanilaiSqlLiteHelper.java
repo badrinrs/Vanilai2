@@ -13,14 +13,13 @@ public class VanilaiSqlLiteHelper extends SQLiteOpenHelper {
     private static final String TABLE_VANILAI = "vanilai";
     private static final String COLUMN_ID = "_id";
     private static final String COLUMN_CITY = "city";
-    private static final String COLUMN_ZIP = "zip";
-    private static final String COLUMN_COUNTRY = "country";
+    private static final String COLUMN_LATITUDE = "zip";
+    private static final String COLUMN_LONGITUDE = "country";
     private static final String DATABASE_NAME = "vanilai.db";
     private static final int DATABASE_VERSION = 1;
 
     private static final String DATABASE_CREATE = "create table "+TABLE_VANILAI+" " +
-            "("+COLUMN_ID+" integer primary key autoincrement, "+COLUMN_CITY+" text, "+
-            COLUMN_ZIP+" text, "+ COLUMN_COUNTRY+" text);";
+            "("+COLUMN_ID+" integer primary key autoincrement, "+COLUMN_CITY+" text not null, "+COLUMN_LATITUDE+" real not null, "+COLUMN_LONGITUDE+" real not null);";
 
     public VanilaiSqlLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -38,4 +37,6 @@ public class VanilaiSqlLiteHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_VANILAI);
         onCreate(db);
     }
+
+
 }

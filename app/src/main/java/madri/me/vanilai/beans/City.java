@@ -11,8 +11,7 @@ public class City {
     private String mCountry;
     private double mLatitude;
     private double mLongitude;
-    private double mMaxTemperature;
-    private double mMinTemperature;
+    private double mTemperature;
 
 
     public long getId() {
@@ -67,20 +66,12 @@ public class City {
         return mLongitude;
     }
 
-    public double getMaxTemperature() {
-        return mMaxTemperature;
+    public double getTemperature() {
+        return mTemperature;
     }
 
-    public double getMinTemperature() {
-        return mMinTemperature;
-    }
-
-    public void setMaxTemperature(double maxTemperature) {
-        mMaxTemperature = maxTemperature;
-    }
-
-    public void setMinTemperature(double minTemperature) {
-        mMinTemperature = minTemperature;
+    public void setTemperature(double temperature) {
+        mTemperature = temperature;
     }
 
 }

@@ -1,43 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/default_location"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.SearchResult.Title"
         android:id="@+id/locationName"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+        android:textAllCaps="true"
         android:textAlignment="center"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_gravity="center_horizontal"/>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
+    <ImageView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/locationName"
-        android:layout_alignParentStart="true"
-        android:weightSum="100">
+        android:id="@+id/currentWeatherImage"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="@string/current_weather_image"
+        android:layout_margin="5dp"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Max:"
-            android:textAlignment="center"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
-            android:id="@+id/max_temperature"
-            android:layout_weight="50"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_temperature"
+        android:id="@+id/temperature"
+        android:layout_gravity="center_horizontal"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Min:"
-            android:textAlignment="center"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
-            android:id="@+id/min_temperature"
-            android:layout_weight="50"/>
-    </LinearLayout>
-
-</RelativeLayout>
+</LinearLayout>

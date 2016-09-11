@@ -11,7 +11,7 @@ public class CurrentForecast {
     @SerializedName("summary")
     private String mSummary;
     @SerializedName("precipProbability")
-    private int mPrecipitation;
+    private double mPrecipitation;
     @SerializedName("humidity")
     private double mHumidity;
     @SerializedName("temperature")
@@ -30,7 +30,7 @@ public class CurrentForecast {
     }
 
     public int getPrecipitation() {
-        return mPrecipitation*100;
+        return (int) mPrecipitation*100;
     }
 
     public double getHumidity() {

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="madri.me.vanilai.activity.AddLocationActivity"
+    android:background="@drawable/bg_gradient">
+
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/city_text"
+        android:hint="City"
+        android:layout_below="@+id/city_label"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/zip_code"
+        android:hint="Zip Code"
+        android:layout_below="@+id/city_text"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cityZipLabel"
+        android:id="@+id/city_label"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.SearchResult.Title"
+        android:textAlignment="center"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/white"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add"
+        android:id="@+id/add_button"
+        android:layout_below="@+id/zip_code"
+        android:layout_alignEnd="@+id/zip_code"
+        android:background="@android:color/transparent"
+        android:textColor="@android:color/white"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/location_list"
+        android:layout_below="@+id/add_button"
+        android:layout_alignParentStart="true"/>
+
+
+</RelativeLayout>

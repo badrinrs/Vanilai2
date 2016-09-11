@@ -24,7 +24,7 @@
         android:lines="1"
         android:inputType="textAutoComplete"
         android:textAlignment="center"
-        android:hint="City, State"/>
+        android:hint="City"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -38,10 +38,19 @@
         android:textAlignment="center"
         android:hint="Zip"/>
 
-    <ListView
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/listView"
+        android:layout_below="@+id/locationTitle"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Locations Added Earlier:"
+        android:textAppearance="@android:style/TextAppearance.Holo.SearchResult.Subtitle"
+        android:id="@+id/locationTitle"
+        android:textSize="18sp"
         android:layout_below="@+id/dialog_zip"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"/>
 </RelativeLayout>

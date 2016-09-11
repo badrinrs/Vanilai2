@@ -73,7 +73,7 @@
         android:layout_below="@+id/location"
         android:layout_margin="40dp"
         android:layout_centerHorizontal="true"
-        android:textSize="35sp"/>
+        android:textSize="75sp"/>
 
     <Switch
         android:layout_width="wrap_content"
@@ -212,12 +212,5 @@
         android:layout_marginLeft="5dp"
         android:contentDescription="@string/action_add_string"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view_locations"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="vertical"
-        android:layout_above="@+id/earthquakeDetected"
-        android:layout_below="@+id/weatherDescription"/>
 
 </RelativeLayout>

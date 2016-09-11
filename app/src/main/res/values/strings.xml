@@ -39,4 +39,8 @@
 
     <string name="title_activity_vanilai_full_screen">VanilaiFullScreenActivity</string>
     <string name="cityZipLabel"><![CDATA[Please provide City or Zip below]]></string>
+    <string name="title_activity_add_location">AddLocationActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>
