@@ -8,7 +8,9 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -18,10 +20,13 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
@@ -58,6 +63,7 @@ public class VanilaiNewLocationActivity extends AppCompatActivity  {
     private ImageView mIconImage;
     private Switch mTemperatureSwitch;
     private Earthquake mEarthquake;
+    private RelativeLayout mFullScreenRelativeLayout;
 
     private double mLatitude;
 
@@ -75,7 +81,17 @@ public class VanilaiNewLocationActivity extends AppCompatActivity  {
         if (networkInfo != null && networkInfo.isConnected()) {
             Log.v(TAG, "Internet Connected!");
         } else {
-            Log.e(TAG, "Internet DisConnected");
+            MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(VanilaiNewLocationActivity.this)
+                    .title("Warning")
+                    .icon(ContextCompat.getDrawable(VanilaiNewLocationActivity.this, R.drawable.ic_warning_white_24dp))
+                    .content("Network Connection Unavailable. It may be difficult to get location.")
+                    .autoDismiss(true).positiveText("Ok").onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            dialog.dismiss();
+                        }
+                    });
+            dialogBuilder.show();
         }
 
 
@@ -96,6 +112,7 @@ public class VanilaiNewLocationActivity extends AppCompatActivity  {
         Button weeklyButton = (Button) findViewById(R.id.weeklyForecastButton);
         mTemperatureSwitch = (Switch) findViewById(R.id.temperatureSwitch);
         ImageButton addButton = (ImageButton) findViewById(R.id.addButton);
+        mFullScreenRelativeLayout = (RelativeLayout) findViewById(R.id.fullScreenRelativeLayout);
         mTemperatureSwitch.setText("\u00b0F");
 
         mTemperatureSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -112,13 +129,14 @@ public class VanilaiNewLocationActivity extends AppCompatActivity  {
                     Intent forecastIntent = new Intent(getApplicationContext(), ForecastActivity.class);
                     Gson gson = new Gson();
                     String target = gson.toJson(mForecast);
+                    forecastIntent.putExtra("background", getBackgroundId(mForecast.getCurrentForecast().getIcon()));
                     forecastIntent.putExtra("forecast", target);
                     forecastIntent.putExtra("city", mLocationTextView.getText().toString());
                     forecastIntent.putExtra("forecastType", "weekly");
                     startActivity(forecastIntent);
                 } else {
                     Log.e(TAG, "Weekly Forecasts not obtained Yet! Please try again later!");
-                    Toast.makeText(getApplicationContext(), "Weekly Forecasts not obtained Yet! Please try again later!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Weekly Forecasts not obtained Yet! Please try again later!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -130,13 +148,14 @@ public class VanilaiNewLocationActivity extends AppCompatActivity  {
                     Intent forecastIntent = new Intent(getApplicationContext(), ForecastActivity.class);
                     Gson gson = new Gson();
                     String target = gson.toJson(mForecast);
+                    forecastIntent.putExtra("background", getBackgroundId(mForecast.getCurrentForecast().getIcon()));
                     forecastIntent.putExtra("forecast", target);
                     forecastIntent.putExtra("city", mLocationTextView.getText().toString());
                     forecastIntent.putExtra("forecastType", "hourly");
                     startActivity(forecastIntent);
                 } else {
                     Log.e(TAG, "Hourly Forecasts not obtained Yet! Please try again later!");
-                    Toast.makeText(getApplicationContext(), "Hourly Forecasts not obtained Yet! Please try again later!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Hourly Forecasts not obtained Yet! Please try again later!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -147,10 +166,12 @@ public class VanilaiNewLocationActivity extends AppCompatActivity  {
                     Intent earthquakeIntent = new Intent(getApplicationContext(), EarthquakeActivity.class);
                     Gson gson = new Gson();
                     String target = gson.toJson(mEarthquake);
+                    earthquakeIntent.putExtra("background", getBackgroundId(mForecast.getCurrentForecast().getIcon()));
                     earthquakeIntent.putExtra("earthquake", target);
                     earthquakeIntent.putExtra("city", mLocationTextView.getText().toString());
                     startActivity(earthquakeIntent);
                 } else {
+                    Toast.makeText(VanilaiNewLocationActivity.this, "Earthquake response Unavailable! Please try again later!", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Earthquake response Unavailable! Please try again later!");
                 }
             }
@@ -170,6 +191,16 @@ public class VanilaiNewLocationActivity extends AppCompatActivity  {
             public void onClick(View view) {
                 getForecast(mLatitude, mLongitude);
                 getEarthquakeInformation(mLatitude, mLongitude);
+            }
+        });
+
+        ImageButton currentLocationButton = (ImageButton) findViewById(R.id.settingsButton);
+        currentLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), VanilaiFullScreenActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
             }
         });
 
@@ -229,19 +260,15 @@ public class VanilaiNewLocationActivity extends AppCompatActivity  {
                 .build();
         EarthquakeService earthquakeService = retrofit.create(EarthquakeService.class);
         Call<Earthquake> earthquakeCall = earthquakeService.getEarthquake("geojson", latitude, longitude, 1000, 20);
-        Log.v(TAG, "Earthquake URL: "+earthquakeCall.request().url().url().toString());
         earthquakeCall.enqueue(new Callback<Earthquake>() {
             @Override
             public void onResponse(Call<Earthquake> call, Response<Earthquake> response) {
                 mEarthquake = response.body();
-                Log.v(TAG, "Response: " + mEarthquake.toString());
             }
 
             @Override
             public void onFailure(Call<Earthquake> call, Throwable t) {
-                Log.e(TAG, "Error Response");
-                Log.e(TAG, "Request: " + call.request().url().url().toString());
-                Log.e(TAG, "Could not get Earthquake Information!");
+                Toast.makeText(VanilaiNewLocationActivity.this, "Failed to get earthquake information", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -254,14 +281,10 @@ public class VanilaiNewLocationActivity extends AppCompatActivity  {
         VanilaiWeatherService forecastService = retrofit.create(VanilaiWeatherService.class);
         final Resources resources = getResources();
         Call<Forecast> forecastCall = forecastService.getForecast(resources.getString(R.string.forecast_io_app_id), latitude + "," + longitude);
-        Toast.makeText(this, "Request URL: " + forecastCall.request().url().url().toString(), Toast.LENGTH_SHORT).show();
-        Log.v(TAG, "Request URL: "+forecastCall.request().url().url().toString());
         forecastCall.enqueue(new Callback<Forecast>() {
             @Override
             public void onResponse(Call<Forecast> call, Response<Forecast> response) {
-                Log.v(TAG, "Response Code: "+response.code());
                 mForecast = response.body();
-                Log.v(TAG, "Response: " + mForecast.toString());
                 AddressHelper.getAddressFromLocation(mForecast.getLatitude(), mForecast.getLongitude(), getApplicationContext(), new GeocoderHandler());
                 mTemperature.setText(resources.getString(R.string.current_temperature, mForecast.getCurrentForecast().getTemperature(), "\u00b0"));
                 mHumidity.setText(resources.getString(R.string.current_humidity, mForecast.getCurrentForecast().getHumidity()));
@@ -271,12 +294,12 @@ public class VanilaiNewLocationActivity extends AppCompatActivity  {
                 String curTime = dateFormat.format(new Date(mForecast.getCurrentForecast().getTime()*1000));
                 mCurrentTime.setText(curTime);
                 mIconImage.setImageResource(getIconId(mForecast.getCurrentForecast().getIcon()));
+                mFullScreenRelativeLayout.setBackgroundResource(getBackgroundId(mForecast.getCurrentForecast().getIcon()));
             }
 
             @Override
             public void onFailure(Call<Forecast> call, Throwable t) {
-                Log.e(TAG, "Request: " + call.request().url().url().toString());
-                Log.e(TAG, "Error: "+t.toString());
+                Toast.makeText(VanilaiNewLocationActivity.this, "Failed to get forecast information.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -295,5 +318,31 @@ public class VanilaiNewLocationActivity extends AppCompatActivity  {
             }
             mLocationTextView.setText(locationAddress);
         }
+    }
+
+    public static int getBackgroundId(String iconString) {
+        int iconId = R.drawable.clear;
+        if(iconString.equalsIgnoreCase("clear-day")) {
+            iconId = R.drawable.clear;
+        } else if(iconString.equalsIgnoreCase("clear-night")) {
+            iconId = R.drawable.clearnight;
+        } else if(iconString.equalsIgnoreCase("partly-cloudy-day")) {
+            iconId = R.drawable.partlycloudyday;
+        } else if(iconString.equalsIgnoreCase("cloudy")) {
+            iconId = R.drawable.cloudyday;
+        } else if(iconString.equalsIgnoreCase("partly-cloudy-night")) {
+            iconId = R.drawable.cloudynight;
+        } else if(iconString.equalsIgnoreCase("fog")) {
+            iconId = R.drawable.foggy_day;
+        } else if(iconString.equalsIgnoreCase("rain")) {
+            iconId = R.drawable.rainy_day;
+        } else if(iconString.equalsIgnoreCase("sleet")) {
+            iconId = R.drawable.sleet_day;
+        } else if(iconString.equalsIgnoreCase("snow")) {
+            iconId = R.drawable.snowy_day;
+        } else if(iconString.equalsIgnoreCase("wind")) {
+            iconId = R.drawable.windy_day;
+        }
+        return iconId;
     }
 }

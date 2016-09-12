@@ -16,13 +16,13 @@
         <activity
             android:name=".activity.ForecastActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
             android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".activity.EarthquakeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
             android:screenOrientation="landscape">
         </activity>
         <activity
@@ -40,13 +40,13 @@
         <activity android:name=".activity.AddLocationActivity"
                   android:configChanges="orientation|keyboardHidden|screenSize"
                   android:label="@string/title_activity_vanilai"
-                  android:theme="@style/AppTheme.NoActionBar"
+                  android:theme="@style/Theme.AppCompat.NoActionBar"
             android:screenOrientation="portrait">
         </activity>
         <activity android:name=".activity.VanilaiNewLocationActivity"
                   android:configChanges="orientation|keyboardHidden|screenSize"
                   android:label="@string/title_activity_vanilai"
-                  android:theme="@style/AppTheme.NoActionBar"
+                  android:theme="@style/Theme.AppCompat.NoActionBar"
                   android:screenOrientation="portrait"/>
     </application>
 

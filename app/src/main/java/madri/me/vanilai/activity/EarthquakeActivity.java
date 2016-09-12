@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -37,6 +38,8 @@ public class EarthquakeActivity extends AppCompatActivity {
         ImageButton backButton = (ImageButton) findViewById(R.id.backButton);
         Intent forecastIntent = getIntent();
         Gson gson = new Gson();
+        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.earthquake_layout);
+        relativeLayout.setBackgroundResource(forecastIntent.getIntExtra("background", R.drawable.clear));
         Earthquake earthquake = gson.fromJson(forecastIntent.getStringExtra("earthquake"), Earthquake.class);
         String city = forecastIntent.getStringExtra("city");
 

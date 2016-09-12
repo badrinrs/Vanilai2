@@ -15,6 +15,8 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -24,10 +26,13 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -78,6 +83,7 @@ public class VanilaiFullScreenActivity extends AppCompatActivity implements Goog
     private ImageView mIconImage;
     private Switch mTemperatureSwitch;
     private Earthquake mEarthquake;
+    private RelativeLayout mFullScreenRelativeLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,6 +93,7 @@ public class VanilaiFullScreenActivity extends AppCompatActivity implements Goog
         setContentView(R.layout.activity_vanilai_full_screen);
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
+        mFullScreenRelativeLayout = (RelativeLayout) findViewById(R.id.fullScreenRelativeLayout);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             Log.v(TAG, "Internet Connected!");
@@ -108,17 +115,15 @@ public class VanilaiFullScreenActivity extends AppCompatActivity implements Goog
         ImageButton addButton = (ImageButton) findViewById(R.id.addButton);
         mTemperatureSwitch.setText("\u00b0F");
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                // The next two lines tell the new client that “this” current class will handle connection stuff
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
-                //fourth line adds the LocationServices API endpoint from GooglePlayServices
                 .addApi(LocationServices.API)
                 .build();
 
         mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(10 * 1000)        // 10 seconds, in milliseconds
-                .setFastestInterval(1000); // 1 second, in milliseconds
+                .setInterval(10 * 1000)
+                .setFastestInterval(1000);
 
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,13 +148,14 @@ public class VanilaiFullScreenActivity extends AppCompatActivity implements Goog
                     Intent forecastIntent = new Intent(getApplicationContext(), ForecastActivity.class);
                     Gson gson = new Gson();
                     String target = gson.toJson(mForecast);
+                    forecastIntent.putExtra("background", getBackgroundId(mForecast.getCurrentForecast().getIcon()));
                     forecastIntent.putExtra("forecast", target);
                     forecastIntent.putExtra("city", mLocationTextView.getText().toString());
                     forecastIntent.putExtra("forecastType", "weekly");
                     startActivity(forecastIntent);
                 } else {
+                    Toast.makeText(VanilaiFullScreenActivity.this, "Weekly Forecasts not obtained Yet! Please try again later!", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Weekly Forecasts not obtained Yet! Please try again later!");
-                    Toast.makeText(getApplicationContext(), "Weekly Forecasts not obtained Yet! Please try again later!", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -161,13 +167,14 @@ public class VanilaiFullScreenActivity extends AppCompatActivity implements Goog
                     Intent forecastIntent = new Intent(getApplicationContext(), ForecastActivity.class);
                     Gson gson = new Gson();
                     String target = gson.toJson(mForecast);
+                    forecastIntent.putExtra("background", getBackgroundId(mForecast.getCurrentForecast().getIcon()));
                     forecastIntent.putExtra("forecast", target);
                     forecastIntent.putExtra("city", mLocationTextView.getText().toString());
                     forecastIntent.putExtra("forecastType", "hourly");
                     startActivity(forecastIntent);
                 } else {
+                    Toast.makeText(VanilaiFullScreenActivity.this, "Hourly Forecasts not obtained Yet! Please try again later!", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Hourly Forecasts not obtained Yet! Please try again later!");
-                    Toast.makeText(getApplicationContext(), "Hourly Forecasts not obtained Yet! Please try again later!", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -178,10 +185,12 @@ public class VanilaiFullScreenActivity extends AppCompatActivity implements Goog
                     Intent earthquakeIntent = new Intent(getApplicationContext(), EarthquakeActivity.class);
                     Gson gson = new Gson();
                     String target = gson.toJson(mEarthquake);
+                    earthquakeIntent.putExtra("background", getBackgroundId(mForecast.getCurrentForecast().getIcon()));
                     earthquakeIntent.putExtra("earthquake", target);
                     earthquakeIntent.putExtra("city", mLocationTextView.getText().toString());
                     startActivity(earthquakeIntent);
                 } else {
+                    Toast.makeText(VanilaiFullScreenActivity.this, "Earthquake response Unavailable! Please try again later!", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Earthquake response Unavailable! Please try again later!");
                 }
             }
@@ -192,10 +201,17 @@ public class VanilaiFullScreenActivity extends AppCompatActivity implements Goog
             public void onClick(View view) {
                 Intent addLocationIntent = new Intent(getApplicationContext(), AddLocationActivity.class);
                 startActivity(addLocationIntent);
-
             }
         });
 
+        ImageButton currentLocationButton = (ImageButton) findViewById(R.id.settingsButton);
+        currentLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent currentLocationIntent = new Intent(getApplicationContext(), VanilaiFullScreenActivity.class);
+                startActivity(currentLocationIntent);
+            }
+        });
     }
 
     private void getEarthquakeInformation(Location location) {
@@ -209,14 +225,11 @@ public class VanilaiFullScreenActivity extends AppCompatActivity implements Goog
             @Override
             public void onResponse(Call<Earthquake> call, Response<Earthquake> response) {
                 mEarthquake = response.body();
-                Log.v(TAG, "Response: " + mEarthquake.toString());
             }
 
             @Override
             public void onFailure(Call<Earthquake> call, Throwable t) {
-                Log.e(TAG, "Error Response");
-                Log.e(TAG, "Request: " + call.request().url().url().toString());
-                Log.e(TAG, "Could not get Earthquake Information!");
+                Toast.makeText(VanilaiFullScreenActivity.this, "Failed to get Earthquake Information.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -229,7 +242,6 @@ public class VanilaiFullScreenActivity extends AppCompatActivity implements Goog
         VanilaiWeatherService forecastService = retrofit.create(VanilaiWeatherService.class);
         final Resources resources = getResources();
         Call<Forecast> forecastCall = forecastService.getForecast(resources.getString(R.string.forecast_io_app_id), location.getLatitude() + "," + location.getLongitude());
-        Toast.makeText(this, "Request URL: " + forecastCall.request().url().url().toString(), Toast.LENGTH_SHORT).show();
         forecastCall.enqueue(new Callback<Forecast>() {
             @Override
             public void onResponse(Call<Forecast> call, Response<Forecast> response) {
@@ -244,12 +256,12 @@ public class VanilaiFullScreenActivity extends AppCompatActivity implements Goog
                 String curTime = dateFormat.format(new Date(mForecast.getCurrentForecast().getTime()*1000));
                 mCurrentTime.setText(curTime);
                 mIconImage.setImageResource(getIconId(mForecast.getCurrentForecast().getIcon()));
+                mFullScreenRelativeLayout.setBackgroundResource(getBackgroundId(mForecast.getCurrentForecast().getIcon()));
             }
 
             @Override
             public void onFailure(Call<Forecast> call, Throwable t) {
-                Log.e(TAG, "Error Response");
-                Log.e(TAG, "Request: " + call.request().url().url().toString());
+                Toast.makeText(VanilaiFullScreenActivity.this, "Failed to get Forecast Information.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -267,13 +279,7 @@ public class VanilaiFullScreenActivity extends AppCompatActivity implements Goog
             if (mLocation == null) {
                 if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED)
                     LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-
             } else {
-                double currentLatitude = mLocation.getLatitude();
-                double currentLongitude = mLocation.getLongitude();
-
-                Toast.makeText(this, "OnConnected: " + currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_SHORT).show();
-
                 getForecast(mLocation);
                 getEarthquakeInformation(mLocation);
             }
@@ -291,11 +297,6 @@ public class VanilaiFullScreenActivity extends AppCompatActivity implements Goog
                             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 
                     } else {
-                        double currentLatitude = mLocation.getLatitude();
-                        double currentLongitude = mLocation.getLongitude();
-
-                        Toast.makeText(this, "OnConnected: " + currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_SHORT).show();
-
                         getForecast(mLocation);
                         getEarthquakeInformation(mLocation);
                     }
@@ -305,7 +306,19 @@ public class VanilaiFullScreenActivity extends AppCompatActivity implements Goog
     }
 
     @Override
-    public void onConnectionSuspended(int i) {}
+    public void onConnectionSuspended(int i) {
+        MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(VanilaiFullScreenActivity.this)
+                .title("Error")
+                .icon(ContextCompat.getDrawable(VanilaiFullScreenActivity.this, R.drawable.ic_warning_white_24dp))
+                .content("Location Services Suspended. Please re-enable Location Services.")
+                .autoDismiss(true).positiveText("Ok").onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                });
+        dialogBuilder.show();
+    }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -316,13 +329,23 @@ public class VanilaiFullScreenActivity extends AppCompatActivity implements Goog
                 e.printStackTrace();
             }
         } else {
+            MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(VanilaiFullScreenActivity.this)
+                    .title("Error")
+                    .icon(ContextCompat.getDrawable(VanilaiFullScreenActivity.this, R.drawable.ic_warning_white_24dp))
+                    .content("Location Services Failed. Please enable Location Services.")
+                    .autoDismiss(true).positiveText("Ok").onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            dialog.dismiss();
+                        }
+                    });
+            dialogBuilder.show();
             Log.e("Error", "Location services connection failed with code " + connectionResult.getErrorCode());
         }
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.v(TAG, "In OnLocationChanged");
         getForecast(location);
         getEarthquakeInformation(location);
     }
@@ -371,6 +394,32 @@ public class VanilaiFullScreenActivity extends AppCompatActivity implements Goog
             iconId = R.drawable.partly_cloudy;
         } else if(iconString.equalsIgnoreCase("partly-cloudy-night")) {
             iconId = R.drawable.cloudy_night;
+        }
+        return iconId;
+    }
+
+    public static int getBackgroundId(String iconString) {
+        int iconId = R.drawable.clear;
+        if(iconString.equalsIgnoreCase("clear-day")) {
+            iconId = R.drawable.clear;
+        } else if(iconString.equalsIgnoreCase("clear-night")) {
+            iconId = R.drawable.clearnight;
+        } else if(iconString.equalsIgnoreCase("partly-cloudy-day")) {
+            iconId = R.drawable.partlycloudyday;
+        } else if(iconString.equalsIgnoreCase("cloudy")) {
+            iconId = R.drawable.cloudyday;
+        } else if(iconString.equalsIgnoreCase("partly-cloudy-night")) {
+            iconId = R.drawable.cloudynight;
+        } else if(iconString.equalsIgnoreCase("fog")) {
+            iconId = R.drawable.foggy_day;
+        } else if(iconString.equalsIgnoreCase("rain")) {
+            iconId = R.drawable.rainy_day;
+        } else if(iconString.equalsIgnoreCase("sleet")) {
+            iconId = R.drawable.sleet_day;
+        } else if(iconString.equalsIgnoreCase("snow")) {
+            iconId = R.drawable.snowy_day;
+        } else if(iconString.equalsIgnoreCase("wind")) {
+            iconId = R.drawable.windy_day;
         }
         return iconId;
     }

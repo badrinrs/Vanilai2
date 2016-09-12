@@ -13,6 +13,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -41,6 +42,8 @@ public class ForecastActivity extends AppCompatActivity {
         ImageButton backButton = (ImageButton) findViewById(R.id.backButton);
         Intent forecastIntent = getIntent();
         Gson gson = new Gson();
+        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.forecast_layout);
+        relativeLayout.setBackgroundResource(forecastIntent.getIntExtra("background", R.drawable.clear));
         Forecast forecast = gson.fromJson(forecastIntent.getStringExtra("forecast"), Forecast.class);
         String city = forecastIntent.getStringExtra("city");
         String forecastType = forecastIntent.getStringExtra("forecastType");

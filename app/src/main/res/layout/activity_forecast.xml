@@ -9,7 +9,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="madri.me.vanilai.activity.ForecastActivity"
-    android:background="@drawable/bg_gradient">
+    android:background="@drawable/bg_gradient"
+    android:id="@+id/forecast_layout">
 
 
     <android.support.v7.widget.RecyclerView

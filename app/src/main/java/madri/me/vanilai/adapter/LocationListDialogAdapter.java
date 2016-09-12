@@ -2,18 +2,22 @@ package madri.me.vanilai.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.List;
 
 import madri.me.vanilai.R;
 import madri.me.vanilai.activity.VanilaiNewLocationActivity;
 import madri.me.vanilai.beans.City;
+import madri.me.vanilai.db.VanilaiSqlLiteHelper;
 
 /**
  * Created by badri on 7/31/16.
@@ -22,10 +26,12 @@ public class LocationListDialogAdapter extends RecyclerView.Adapter<LocationList
 
     private List<City> mCities;
     private Context mContext;
+    private VanilaiSqlLiteHelper mHelper;
 
-    public LocationListDialogAdapter(Context context, List<City> cities) {
+    public LocationListDialogAdapter(Context context, List<City> cities, VanilaiSqlLiteHelper helper) {
         mCities = cities;
         mContext = context;
+        mHelper = helper;
     }
 
     @Override
@@ -70,8 +76,34 @@ public class LocationListDialogAdapter extends RecyclerView.Adapter<LocationList
         }
 
         @Override
-        public boolean onLongClick(View view) {
-            Toast.makeText(mContext, mLocation.getText().toString()+" Long Clicked", Toast.LENGTH_LONG).show();
+        public boolean onLongClick(final View view) {
+            MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(view.getContext())
+                    .autoDismiss(true).title("Remove City: ").content(mLocation.getText().toString())
+                    .negativeText("Cancel").positiveText("Remove")
+                    .onNegative(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            dialog.dismiss();
+                        }
+                    }).onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            String cityName = mLocation.getText().toString();
+                            City removalCity = null;
+                            for(City city: mCities) {
+                                if(city.getCity().equals(cityName)) {
+                                    removalCity = city;
+                                }
+                            }
+                            if(removalCity != null) {
+                                mCities.remove(removalCity);
+                                mHelper.removeCity(removalCity.getCity());
+                                LocationListDialogAdapter.this.notifyDataSetChanged();
+                            }
+
+                        }
+                    });
+            dialogBuilder.show();
             return true;
         }
     }
