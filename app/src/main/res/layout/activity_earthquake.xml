@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="madri.me.vanilai.activity.EarthquakeActivity"
+    tools:context="me.madri.vanilai.activity.EarthquakeActivity"
     android:background="@drawable/bg_gradient"
     android:id="@+id/earthquake_layout">
 

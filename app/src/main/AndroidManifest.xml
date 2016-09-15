@@ -14,19 +14,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.ForecastActivity"
+            android:name="me.madri.vanilai.activity.ForecastActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".activity.EarthquakeActivity"
+            android:name="me.madri.vanilai.activity.EarthquakeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             android:screenOrientation="landscape">
         </activity>
         <activity
-            android:name=".activity.VanilaiFullScreenActivity"
+            android:name="me.madri.vanilai.activity.VanilaiFullScreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_vanilai"
             android:theme="@style/Theme.AppCompat.NoActionBar"
@@ -37,13 +37,13 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".activity.AddLocationActivity"
+        <activity android:name="me.madri.vanilai.activity.AddLocationActivity"
                   android:configChanges="orientation|keyboardHidden|screenSize"
                   android:label="@string/title_activity_vanilai"
                   android:theme="@style/Theme.AppCompat.NoActionBar"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".activity.VanilaiNewLocationActivity"
+        <activity android:name="me.madri.vanilai.activity.VanilaiNewLocationActivity"
                   android:configChanges="orientation|keyboardHidden|screenSize"
                   android:label="@string/title_activity_vanilai"
                   android:theme="@style/Theme.AppCompat.NoActionBar"
