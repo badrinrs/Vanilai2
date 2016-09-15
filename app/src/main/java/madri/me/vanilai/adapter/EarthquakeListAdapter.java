@@ -8,11 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import madri.me.vanilai.R;
 import madri.me.vanilai.beans.EarthquakeInformation;
@@ -44,8 +46,9 @@ public class EarthquakeListAdapter extends RecyclerView.Adapter<EarthquakeListAd
         EarthquakeProperties earthquakeProperties = mEarthquakePropertiesList.get(position);
         EarthquakeInformation earthquakeInformation = earthquakeProperties.getEarthquakeInformation();
         holder.mMagnitude.setText("Mag: "+earthquakeInformation.getMagnitude());
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd h:mm a", Locale.getDefault());
-        holder.mTime.setText(simpleDateFormat.format(new Date(earthquakeInformation.getTime()*1000)));
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM dd h:mm a", Locale.getDefault());
+        long time = earthquakeInformation.getTime();
+        holder.mTime.setText(simpleDateFormat.format(new Date(time)));
         holder.mPlace.setText(earthquakeInformation.getPlace());
     }
 
